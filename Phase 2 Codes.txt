@@ -1,0 +1,36 @@
+create view game_info(Game_Type, Game_Date, Stadium_Name, City_Name, Country_Name, Score) as
+(select gtype, gdate, sname, city, cname, team1s
+	from stadium, game, country
+	where game.sid=stadium.sid and team1=country.cid)
+	union
+(select gtype, gdate, sname, city, cname, team2s
+	from stadium, game, country
+	where game.sid=stadium.sid and team2=country.cid);
+	
+	
+	
+select * from game_info order by game_date, stadium_name, city_name;
+select * from game_info where Country_Name='France';
+select * from game_info where game_type='A';
+select country_name from game_info where game_type='X';
+
+
+
+select pname, count(*)
+	from player, starters
+	where player.pno = starters.pno and player.cid = starters.cid
+	group by pname
+	order by count(*) desc;
+	
+select pname, count(*)
+	from player, goals
+	where player.pno = goals.pno and goals.cid = player.cid
+	group by pname
+	order by count(*) desc;
+	
+select country.cname, O.pname, I.pname, subtime
+	from country, player as O, player as I, subs
+	where O.pno = subs.pout and I.pno = subs.pin 
+	and O.cid = subs.cid and I.cid = subs.cid
+	and subs.cid = country.cid
+	order by cname;
